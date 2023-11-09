@@ -19,23 +19,15 @@ jobs:
         run: |
           base_version=$(grep -o '<version>.*</version>' pom.xml | head -n1 | sed 's/<[^>]*>//g')
           new_version=$(echo $base_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-          
-          sed -i "s/$base_version/$new_version/" pom.xml
-          
-          echo "$new_version"
-          # export VERSION=$new_version
-          # echo "New version is $VERSION" 
-
           echo "VERSION=$new_version" >> $GITHUB_ENV
-          echo ${{ env.VERSION }}
+          
+          # sed -i "s/$base_version/$new_version/" pom.xml
+          
     
       - name: Build Docker Image
         run: |
-          echo "New version is $VERSION" 
-          echo ${{ env.VERSION }}
-
-          # docker build --file ./docker/dockerfile --tag ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:latest .
-
+          docker build --file ./docker/dockerfile --tag ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.VERSION }} .
+          docker images
 
       
       
