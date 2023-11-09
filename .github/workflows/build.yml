@@ -73,14 +73,14 @@ jobs:
 
     - name: Update version
       run: |
-        echo "The new version is ${{ env.NEW_VERSION }}"
-        
-        # Update the version.txt in the repo
-        ${{ env.NEW_VERSION }} > version.txt
-        cat version.txt
-        git add version.txt
-        git commit -m "Update version.txt"
-        git push
+          echo "The new version is ${{ env.NEW_VERSION }}"
+          
+          # Update the version.txt in the repo
+          echo "${{ env.NEW_VERSION }}" > version.txt
+          cat version.txt
+          git add version.txt
+          git commit -m "Update version.txt"
+          git push
 
     
   # deploy:
