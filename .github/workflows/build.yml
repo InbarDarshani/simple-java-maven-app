@@ -20,7 +20,7 @@ jobs:
           base_version=$(grep -o '<version>.*</version>' pom.xml | head -n1 | sed 's/<[^>]*>//g')
           new_version=$(echo $base_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
           
-          sed -i "s/$version/$new_version/" pom.xml
+          sed -i "s/$base_version/$new_version/" pom.xml
           cat pom.xml
           
           echo "VERSION=$new_version" >> $GITHUB_ENV
