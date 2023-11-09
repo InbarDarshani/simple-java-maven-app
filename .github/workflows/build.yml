@@ -11,8 +11,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
 
+      - name: Check out repository code
+        uses: actions/checkout@v4
   
       - name: Increment version
         run: |
@@ -41,9 +42,9 @@ jobs:
       #   run: docker push ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_CLIENT_REPO }}:latest
     
       
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
 
     # steps:
     # - name: Deploy Frontend
