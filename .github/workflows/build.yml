@@ -11,9 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-
+      
     - name: Increment version
-      run: |
+      uses: actions/checkout@v3
+    - run: |
         version=$(grep -o '<version>.*</version>' pom.xml | head -n1 | sed 's/<[^>]*>//g')
         new_version=$(echo $version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
         sed -i "s/$version/$new_version/" pom.xml
