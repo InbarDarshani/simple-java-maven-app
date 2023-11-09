@@ -31,8 +31,7 @@ jobs:
       run : |
         mvn -B -DskipTests clean package
         mvn test
-        #TODO: check if it fails the pipeline
-
+        
 
     - name: Increment version
       run: |
@@ -58,7 +57,9 @@ jobs:
           
         
     - name: Push to DockerHub
-      run: docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.NEW_VERSION }}
+      run: |
+        docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:latest
+        docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.NEW_VERSION }}
 
 
     - name: Update version
@@ -75,23 +76,3 @@ jobs:
         git commit -m "Update version.txt"
         git push
     
-        
-  # deploy:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-
-    # steps:
-    # - name: Deploy Frontend
-    #   uses: appleboy/ssh-action@master
-    #   with:
-    #     host: ${{ secrets.HOST_FRONTEND }}
-    #     username: ${{ secrets.HOST_FRONTEND_USER }}
-    #     key: ${{ secrets.PRIVATE_KEY }}
-    #     port: ${{ secrets.PORT }}
-    #     script_stop: true
-    #     script: |
-    #     sudo docker stop ${{ secrets.DOCKER_CLIENT_CONTAINER }}
-    #     sudo docker rm ${{ secrets.DOCKER_CLIENT_CONTAINER }}
-    #     sudo docker rmi ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_CLIENT_REPO }}
-    #     sudo docker pull ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_CLIENT_REPO }}
-    #     sudo docker compose --file /opt/${{ secrets.APP_NAME }}/docker/docker-compose-client.yml --project-directory /opt/${{ secrets.APP_NAME }} up --detach
