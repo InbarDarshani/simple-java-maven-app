@@ -41,7 +41,7 @@ jobs:
         # Increase the patch part 
         new_version=$(echo $base_version | awk -F. '{$NF = $NF + 1} 1' | sed 's/ /./g')
         echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
-       
+    
 
     - name: Build Docker Image
       run: |
@@ -58,8 +58,12 @@ jobs:
         
     - name: Push to DockerHub
       run: |
+        # Push with version tag
+        docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.NEW_VERSION }} 
+        
+        # Push with latest tag
+        docker tag ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:latest
         docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:latest
-        docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.NEW_VERSION }}
 
 
     - name: Update version
