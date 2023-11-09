@@ -23,14 +23,17 @@ jobs:
           sed -i "s/$base_version/$new_version/" pom.xml
           
           echo "$new_version"
-          export VERSION=$new_version
-          echo "New version is $VERSION" 
+          # export VERSION=$new_version
+          # echo "New version is $VERSION" 
 
+          echo "VERSION=$new_version" >> $GITHUB_ENV
+          echo ${{ env.VERSION }}
     
       - name: Build Docker Image
         run: |
           echo "New version is $VERSION" 
-          echo "${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}" 
+          echo ${{ env.VERSION }}
+
           # docker build --file ./docker/dockerfile --tag ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:latest .
 
 
