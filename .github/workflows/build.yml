@@ -34,12 +34,12 @@ jobs:
 
     - name: Increment version
       run: |
-          # Get the current version from the txt file
-          base_version=$(cat version.txt)
+        # Get the current version from the txt file
+        base_version=$(cat version.txt)
 
-          # Increase the patch part 
-          new_version=$(echo $base_version | awk -F. '{$NF = $NF + 1} 1' | sed 's/ /./g')
-          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
+        # Increase the patch part 
+        new_version=$(echo $base_version | awk -F. '{$NF = $NF + 1} 1' | sed 's/ /./g')
+        echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
 
 
@@ -58,29 +58,39 @@ jobs:
        
     - name: Build Docker Image
       run: |
-          echo "The new version is ${{ env.NEW_VERSION }}"
-          docker build --file ./docker/dockerfile --tag ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.NEW_VERSION }} .
+        echo "The new version is ${{ env.NEW_VERSION }}"
+        docker build --file ./docker/dockerfile --tag ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.NEW_VERSION }} .
 
     - name: Login to Docker Hub
       uses: docker/login-action@v1
       with:
-          username: ${{ vars.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        username: ${{ vars.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
             
     # - name: Push to DockerHub
     #   run: docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.NEW_VERSION }}
     
 
+    # - name: Login to GitHub
+    #   run:
+    #     git config --local user.email "github-actions"
+    #     git config --local user.name "github-actions"
+  
+
     - name: Update version
       run: |
-          echo "The new version is ${{ env.NEW_VERSION }}"
-          
-          # Update the version.txt in the repo
-          echo "${{ env.NEW_VERSION }}" > version.txt
-          cat version.txt
-          git add version.txt
-          git commit -m "Update version.txt"
-          git push
+
+        git config --local user.email "github-actions"
+        git config --local user.name "github-actions"
+
+        echo "The new version is ${{ env.NEW_VERSION }}"
+        
+        # Update the version.txt in the repo
+        echo "${{ env.NEW_VERSION }}" > version.txt
+        cat version.txt
+        git add version.txt
+        git commit -m "Update version.txt"
+        git push
 
     
   # deploy:
