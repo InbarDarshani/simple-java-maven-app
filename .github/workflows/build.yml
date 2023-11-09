@@ -33,18 +33,11 @@ jobs:
       - name: Increment version
         run: |
           base_version=$(grep -o '<version>.*</version>' pom.xml | head -n1 | sed 's/<[^>]*>//g')
-          new_version=$(echo $base_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+          new_version=$(echo $base_version | awk -F. '{$NF = $NF + ${{ github.run_number }};} 1' | sed 's/ /./g')
           echo "VERSION=$new_version" >> $GITHUB_ENV
           echo "New version is ${{ env.VERSION }}"
           
           # sed -i "s/$base_version/$new_version/" pom.xml
-
-          name=`mvn help:evaluate -Dexpression=project.name | grep "^[^\[]"`
-          pom_version=`mvn help:evaluate -Dexpression=project.version | grep "^[^\[]"`
-          new_version=$(echo $pom_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-          echo "Name - $name"
-          echo "Version in pom - $pom_version"
-          echo "Version new - $new_version"
           
     
       - name: Build Docker Image
@@ -58,7 +51,7 @@ jobs:
       #     password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
             
       # - name: Push to DockerHub
-      #   run: docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_CLIENT_REPO }}:latest
+      #   run: docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_CLIENT_REPO }}
     
       
   # deploy:
