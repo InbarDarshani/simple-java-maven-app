@@ -23,6 +23,11 @@ jobs:
           sed -i "s/$base_version/$new_version/" pom.xml
           
           echo "$new_version"
+          
+          export VERSION=$new_version
+          echo "New version is ${{ env.VERSION }}" 
+          echo "New version is $VERSION" 
+
           echo "VERSION=$new_version" >> "$GITHUB_ENV"
           echo "New version is ${{ env.VERSION }}" 
           echo "New version is $VERSION" 
