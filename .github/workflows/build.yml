@@ -37,12 +37,13 @@ jobs:
           patch_number=${{ github.run_number }}
 
           # Set new version to be the base + patch
-          new_version=$(echo $base_version | awk -F. '{$NF = $NF + $patch_number;} 1' | sed 's/ /./g')
+          new_version=$(echo $base_version | awk -F. '{$NF = $NF + "$patch_number";} 1' | sed 's/ /./g')
 
           # Store the version in environment variable
           echo "VERSION=$new_version" >> $GITHUB_ENV
 
-
+          echo "$patch_number"
+          echo $patch_number
           echo "The new version is $new_version"
           echo "The new version is ${{ env.VERSION }}"
 
