@@ -21,9 +21,8 @@ jobs:
           new_version=$(echo $base_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
           
           sed -i "s/$base_version/$new_version/" pom.xml
-          cat pom.xml
           
-          echo "VERSION=$new_version" >> $GITHUB_ENV
+          echo "VERSION=$new_version" >> "$GITHUB_ENV"
           echo "New version is ${{ env.VERSION }}" 
           
     
