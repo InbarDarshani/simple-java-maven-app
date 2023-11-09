@@ -62,7 +62,7 @@ jobs:
         docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.NEW_VERSION }} 
         
         # Push with latest tag
-        docker tag ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:latest
+        docker tag ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }} ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:latest
         docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:latest
 
 
