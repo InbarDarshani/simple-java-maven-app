@@ -49,7 +49,8 @@ jobs:
 
           
       - name: Build Docker Image
-        run: |
+        uses: actions/checkout@v4
+      - run: |
           echo "The new version is ${{ env.VERSION }}"
           docker build --file ./docker/dockerfile --tag ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.VERSION }} .
     
