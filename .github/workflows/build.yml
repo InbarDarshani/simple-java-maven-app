@@ -33,11 +33,15 @@ jobs:
       - name: Increment version
         run: |
           base_version=$(grep -o '<version>.*</version>' pom.xml | head -n1 | sed 's/<[^>]*>//g')
-          new_version=$(echo $base_version | awk -F. '{$NF = $NF + ${{ github.run_number }};} 1' | sed 's/ /./g')
+          new_version=$(echo $base_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+
+          echo "${{ github.run_number }}"
+
           echo "VERSION=$new_version" >> $GITHUB_ENV
           echo "New version is ${{ env.VERSION }}"
           
           # sed -i "s/$base_version/$new_version/" pom.xml
+
           
     
       - name: Build Docker Image
