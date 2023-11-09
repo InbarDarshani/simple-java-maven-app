@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: CI
 
 on:
   push:
@@ -41,6 +41,8 @@ jobs:
 
           # Store the version in environment variable
           echo "VERSION=$new_version" >> $GITHUB_ENV
+
+          echo "The new version is ${{ env.VERSION }}"
        
     - name: Build Docker Image
       run: |
