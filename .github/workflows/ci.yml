@@ -9,8 +9,8 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
-    # # Ignore this job if it was triggered by a commit this workflow performed
-    # if: github.actor != 'github-actions'
+    # Ignore this job if it was triggered by a commit this workflow performed
+    if: github.actor != 'github-actions'
 
     steps:
 
@@ -29,10 +29,6 @@ jobs:
       run : |
         mvn -B -DskipTests clean package
         mvn test
-
-        # TODO:
-        cat target/surefire-reports/*.xml
-        
 
     - name: Increment version
       run: |
@@ -83,6 +79,6 @@ jobs:
         # Update pom file and push to repo
         sed -i "s/${{ env.CURRENT_VERSION }}/${{ env.NEW_VERSION }}/" pom.xml
         git add pom.xml
-        git commit -m "Update version.txt"
+        git commit -m "Update version in pom.xml"
         git push
     
