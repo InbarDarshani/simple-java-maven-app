@@ -100,7 +100,7 @@ jobs:
         host: ${{ secrets.HOST_IP }}
         username: ${{ secrets.HOST_USER }}
         key: ${{ secrets.HOST_PRIVATE_KEY }}
-        script_stop: true                                    
+                                            
 
         script: |     
           docker pull $DOCKER_IMAGE:latest
