@@ -1,4 +1,4 @@
-name: CI
+name: CI-CD
 
 on:
   push:
@@ -6,7 +6,6 @@ on:
 
 env:
   DOCKER_IMAGE: "${{ secrets.DOCKERHUB_USER }}/${{ secrets.DOCKERHUB_REPO_NAME }}"
-  TEST: "SOME TEST"
     
 jobs:
 
@@ -49,7 +48,7 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        docker build --file ./docker/dockerfile --tag ${{ env.DOCKER_IMAGE }}  .
+        docker build --file ./docker/dockerfile --tag ${{ env.DOCKER_IMAGE }} .
 
         
     - name: Log in to DockerHub
@@ -62,7 +61,7 @@ jobs:
         docker push ${{ env.DOCKER_IMAGE }}:latest
         
         # Push with version tag
-        docker tag ${{ env.DOCKER_IMAGE }}  ${{ env.DOCKER_IMAGE }}:${{ env.NEW_VERSION }} 
+        docker tag ${{ env.DOCKER_IMAGE }} ${{ env.DOCKER_IMAGE }}:${{ env.NEW_VERSION }} 
         docker push ${{ env.DOCKER_IMAGE }}:${{ env.NEW_VERSION }} 
 
 
@@ -88,15 +87,6 @@ jobs:
 
     steps:
 
-
-    - name: DEBUG
-      run: | 
-        echo ${{ env }} 
-        echo ${{ env.DOCKER_IMAGE }} 
-        echo $DOCKER_IMAGE
-        echo $TEST
-
-
     - name: Deploy container on EC2 host
       uses: appleboy/ssh-action@master
       with:
@@ -104,9 +94,9 @@ jobs:
         username: ${{ secrets.HOST_USER }}
         key: ${{ secrets.HOST_PRIVATE_KEY }}          
 
-        script: |     
-          docker pull ${{ env.DOCKER_IMAGE }} 
+        script: |
+          docker pull ${{ env.DOCKER_IMAGE }}
           docker stop my-app
           docker rm my-app
-          docker run --name my-app --restart always ${{ env.DOCKER_IMAGE }} 
+          docker run --name my-app --restart always ${{ env.DOCKER_IMAGE }}
           
