@@ -17,7 +17,7 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v4
   
-      # TODO: update 
+      
     - name: Set up Java
       uses: actions/setup-java@v2
       with:
@@ -58,13 +58,14 @@ jobs:
         
     - name: Push to DockerHub
       run: |
+        image="${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}"
+
         # Push with latest tag
-        docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:latest
+        docker push $image:latest
         
         # Push with version tag
-        image="${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}"
-        docker tag $image ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.NEW_VERSION }} 
-        docker push ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ env.NEW_VERSION }} 
+        docker tag $image $image:${{ env.NEW_VERSION }} 
+        docker push $image:${{ env.NEW_VERSION }} 
 
 
     - name: Update version
