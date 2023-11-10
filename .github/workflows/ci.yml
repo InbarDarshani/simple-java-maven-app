@@ -99,11 +99,10 @@ jobs:
       with:
         host: ${{ secrets.HOST_IP }}
         username: ${{ secrets.HOST_USER }}
-        key: ${{ secrets.HOST_PRIVATE_KEY }}
-                                            
+        key: ${{ secrets.HOST_PRIVATE_KEY }}                        
 
         script: |     
-          docker pull $DOCKER_IMAGE:latest
+          docker pull $DOCKER_IMAGE
           docker stop my-app
           docker rm my-app
           docker run --name my-app --restart always $DOCKER_IMAGE 
