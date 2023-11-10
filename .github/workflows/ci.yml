@@ -91,15 +91,20 @@ jobs:
 
     - name: DEBUG
       run: | 
+        echo ${{ env }} 
+        echo ${{ env.DOCKER_IMAGE }} 
         echo $DOCKER_IMAGE
         echo $TEST
+
 
     - name: Deploy container on EC2 host
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST_IP }}
         username: ${{ secrets.HOST_USER }}
-        key: ${{ secrets.HOST_PRIVATE_KEY }}                        
+        key: ${{ secrets.HOST_PRIVATE_KEY }}          
+      env:
+        DOCKER_IMAGE: $DOCKER_IMAGE         
 
         script: |     
           docker pull $DOCKER_IMAGE
