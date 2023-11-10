@@ -3,7 +3,11 @@ name: CI
 on:
   push:
     branches: [ "master" ]
-      
+
+env:
+  DOCKER_IMAGE: "${{ secrets.DOCKERHUB_USER }}/${{ secrets.DOCKERHUB_REPO_NAME }}"
+
+    
 jobs:
 
   ci:
@@ -17,7 +21,7 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v4
   
-      
+
     - name: Set up Java
       uses: actions/setup-java@v2
       with:
@@ -45,27 +49,29 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        echo "The new version is ${{ env.NEW_VERSION }}"
-        docker build --file ./docker/dockerfile --tag ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }} .
+        docker build --file ./docker/dockerfile --tag $DOCKER_IMAGE .
 
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ vars.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      
+    #   # TODO: switch to command?
+    # - name: Login to Docker Hub
+    #   uses: docker/login-action@v1
+    #   with:
+    #     username: ${{ secrets.DOCKERHUB_USER }}
+    #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
           
+
+    - name: Log in to DockerHub
+      run: echo "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}" | docker login --username ${{ secrets.DOCKERHUB_USER }} --password-stdin
+
         
     - name: Push to DockerHub
       run: |
-        image="${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}"
-
         # Push with latest tag
-        docker push $image:latest
+        docker push $DOCKER_IMAGE:latest
         
         # Push with version tag
-        docker tag $image $image:${{ env.NEW_VERSION }} 
-        docker push $image:${{ env.NEW_VERSION }} 
+        docker tag $DOCKER_IMAGE $DOCKER_IMAGE:${{ env.NEW_VERSION }} 
+        docker push $DOCKER_IMAGE:${{ env.NEW_VERSION }} 
 
 
     - name: Update version
@@ -82,4 +88,32 @@ jobs:
         git add pom.xml
         git commit -m "Update version in pom.xml"
         git push
-    
+
+
+  cd:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: DEBUG
+      run: |
+       echo ${{ env }}
+       echo "The previous version is ${{ env.CURRENT_VERSION }}"
+       echo "The new version is ${{ env.NEW_VERSION }}"
+       
+
+    - name: Deploy container on EC2 host
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST_IP }}
+        username: ${{ secrets.HOST_USER }}
+        key: ${{ secrets.HOST_PRIVATE_KEY }}
+        script_stop: true                                     
+
+        script: |     
+          docker pull $DOCKER_IMAGE:latest
+          docker stop my-app
+          docker rm my-app
+          docker run --name my-app --restart always $DOCKER_IMAGE 
+          
