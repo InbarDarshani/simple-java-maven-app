@@ -3,17 +3,15 @@ name: CI
 on:
   push:
     branches: [ "master" ]
-    paths-ignore:
-      - 'pom.xml'
-  pull_request:
-    branches: [ "master" ]
-    paths-ignore:
-      - 'pom.xml'
       
 jobs:
 
   ci:
     runs-on: ubuntu-latest
+
+    # # Ignore this job if it was triggered by a commit this workflow performed
+    # if: github.actor != 'github-actions'
+
     steps:
 
     - name: Check out repository code
@@ -31,6 +29,9 @@ jobs:
       run : |
         mvn -B -DskipTests clean package
         mvn test
+
+        # TODO:
+        cat target/surefire-reports/*.xml
         
 
     - name: Increment version
