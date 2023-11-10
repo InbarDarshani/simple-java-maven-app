@@ -59,11 +59,11 @@ jobs:
     - name: Push to DockerHub
       run: |
         # Push with latest tag
-        docker push ${{ env.DOCKER_IMAGE }} :latest
+        docker push ${{ env.DOCKER_IMAGE }}:latest
         
         # Push with version tag
         docker tag ${{ env.DOCKER_IMAGE }}  ${{ env.DOCKER_IMAGE }}:${{ env.NEW_VERSION }} 
-        docker push ${{ env.DOCKER_IMAGE }} :${{ env.NEW_VERSION }} 
+        docker push ${{ env.DOCKER_IMAGE }}:${{ env.NEW_VERSION }} 
 
 
     - name: Update version
