@@ -3,12 +3,12 @@ name: CI
 on:
   push:
     branches: [ "master" ]
-    # paths-ignore:
-    #   - 'pom.xml'
+    paths-ignore:
+      - 'pom.xml'
   pull_request:
     branches: [ "master" ]
-    # paths-ignore:
-    #   - 'pom.xml'
+    paths-ignore:
+      - 'pom.xml'
       
 jobs:
 
@@ -19,7 +19,7 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v4
   
-
+      # TODO: update 
     - name: Set up Java
       uses: actions/setup-java@v2
       with:
@@ -41,7 +41,7 @@ jobs:
         # Increase the patch part
         new_version=$(echo $current_version | awk -F. '{$NF = $NF + 1} 1' | sed 's/ /./g')
 
-        # Store version in environment
+        # Store versions in environment
         echo "CURRENT_VERSION=$current_version" >> $GITHUB_ENV
         echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
     
@@ -85,3 +85,5 @@ jobs:
         git commit -m "Update version.txt"
         git push
     
+      
+        # TODO: target/surefire-reports/*.xml
