@@ -64,7 +64,7 @@ jobs:
         docker tag ${{ env.DOCKER_IMAGE }} ${{ env.DOCKER_IMAGE }}:${{ env.NEW_VERSION }} 
         docker push ${{ env.DOCKER_IMAGE }}:${{ env.NEW_VERSION }} 
 
-
+ 
     - name: Update version
       run: |
         # Config git identity
